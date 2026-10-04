@@ -1,5 +1,5 @@
-import { useEffect, useRef, useState } from 'react'
-import { ArrowDown, ArrowLeft, ArrowRight, BadgeCheck, BadgeDollarSign, BedDouble, Check, Compass, Headset, HeartHandshake, MapPin, MessageSquareText, Pause, Plane, Play, Route, SlidersHorizontal, Van } from 'lucide-react'
+import { useEffect, useState } from 'react'
+import { ArrowDown, ArrowRight, BadgeCheck, BadgeDollarSign, BedDouble, Check, Compass, Headset, HeartHandshake, MapPin, MessageSquareText, Plane, Route, SlidersHorizontal, Van } from 'lucide-react'
 import { Link } from 'react-router-dom'
 import FeaturedDestinations from '../components/FeaturedDestinations'
 import FaqSection from '../components/FaqSection'
@@ -61,53 +61,29 @@ function Home() {
   const [heroDestination, setHeroDestination] = useState(null)
   const [slideIndex, setSlideIndex] = useState(() => Math.floor(Math.random() * heroSlides.length))
   const [outgoingSlide, setOutgoingSlide] = useState(null)
-  const [isPaused, setIsPaused] = useState(false)
-  const [prefersReducedMotion, setPrefersReducedMotion] = useState(false)
-  const [allowReducedMotionAutoplay, setAllowReducedMotionAutoplay] = useState(false)
-  const outgoingTimerRef = useRef(null)
+  const [hasChangedSlide, setHasChangedSlide] = useState(false)
   const currentSlide = heroSlides[slideIndex]
   useDocumentTitle('Home', 'Browse destinations, thoughtful travel packages, and custom trip ideas with YatraHub.')
 
-  function changeSlide(nextIndex) {
-    if (nextIndex === slideIndex) return
-    setOutgoingSlide(currentSlide)
-    setSlideIndex(nextIndex)
-  }
-
   useEffect(() => {
-    const mediaQuery = window.matchMedia('(prefers-reduced-motion: reduce)')
-    const updatePreference = () => setPrefersReducedMotion(mediaQuery.matches)
-    updatePreference()
-    mediaQuery.addEventListener('change', updatePreference)
-    return () => mediaQuery.removeEventListener('change', updatePreference)
-  }, [])
-
-  useEffect(() => {
-    if (isPaused || (prefersReducedMotion && !allowReducedMotionAutoplay)) return undefined
-
     const randomOffset = 1 + Math.floor(Math.random() * (heroSlides.length - 1))
     const nextSlideIndex = (slideIndex + randomOffset) % heroSlides.length
     const nextImage = new Image()
     nextImage.src = heroSlides[nextSlideIndex].image
     const timeoutId = window.setTimeout(() => {
       setOutgoingSlide(currentSlide)
+      setHasChangedSlide(true)
       setSlideIndex(nextSlideIndex)
     }, 4500)
 
     return () => window.clearTimeout(timeoutId)
-  }, [allowReducedMotionAutoplay, currentSlide, isPaused, prefersReducedMotion, slideIndex])
+  }, [currentSlide, slideIndex])
 
   useEffect(() => {
     if (!outgoingSlide) return undefined
 
-    outgoingTimerRef.current = window.setTimeout(() => {
-      setOutgoingSlide(null)
-      outgoingTimerRef.current = null
-    }, 1450)
-
-    return () => {
-      if (outgoingTimerRef.current) window.clearTimeout(outgoingTimerRef.current)
-    }
+    const timeoutId = window.setTimeout(() => setOutgoingSlide(null), 1450)
+    return () => window.clearTimeout(timeoutId)
   }, [outgoingSlide])
 
   useEffect(() => {
@@ -133,7 +109,7 @@ function Home() {
           />
         )}
         <img
-          className="home-hero-image is-current"
+          className={`home-hero-image is-current${hasChangedSlide ? ' is-incoming' : ''}`}
           key={currentSlide.photo}
           src={currentSlide.image}
           alt={`Travel inspiration: ${currentSlide.place}`}
@@ -144,14 +120,14 @@ function Home() {
             {outgoingSlide && (
               <p className="hero-kicker is-outgoing" aria-hidden="true"><MapPin size={15} /> {outgoingSlide.place}</p>
             )}
-            <p className="hero-kicker is-current" key={`${currentSlide.photo}-place`}><MapPin size={15} /> {currentSlide.place}</p>
+            <p className={`hero-kicker is-current${hasChangedSlide ? ' is-incoming' : ''}`} key={`${currentSlide.photo}-place`}><MapPin size={15} /> {currentSlide.place}</p>
           </div>
           <h1>YatraHub</h1>
           <div className="hero-quote-stack" aria-live="polite" aria-atomic="true">
             {outgoingSlide && (
               <p className="hero-description hero-slide-quote is-outgoing" aria-hidden="true">&ldquo;{outgoingSlide.quote}&rdquo;</p>
             )}
-            <p className="hero-description hero-slide-quote is-current" key={`${currentSlide.photo}-quote`}>&ldquo;{currentSlide.quote}&rdquo;</p>
+            <p className={`hero-description hero-slide-quote is-current${hasChangedSlide ? ' is-incoming' : ''}`} key={`${currentSlide.photo}-quote`}>&ldquo;{currentSlide.quote}&rdquo;</p>
           </div>
           <div className="hero-actions">
             <Link className="button button-coral" to="/destinations">Find your journey <ArrowRight size={17} /></Link>
@@ -159,31 +135,7 @@ function Home() {
           </div>
         </div>
         <a className="hero-scroll" href="#featured" aria-label="Scroll to featured journeys"><ArrowDown size={17} /></a>
-        <div className="hero-slide-controls" aria-label="Travel inspiration slideshow controls">
-          <span className="hero-slide-count" aria-label={`Slide ${slideIndex + 1} of ${heroSlides.length}`}>
-            {String(slideIndex + 1).padStart(2, '0')} <span>/ {String(heroSlides.length).padStart(2, '0')}</span>
-          </span>
-          <button type="button" aria-label="Previous travel inspiration" onClick={() => changeSlide((slideIndex + heroSlides.length - 1) % heroSlides.length)}>
-            <ArrowLeft size={16} />
-          </button>
-          <button
-            type="button"
-            aria-label={isPaused || (prefersReducedMotion && !allowReducedMotionAutoplay) ? 'Play travel inspiration slideshow' : 'Pause travel inspiration slideshow'}
-            onClick={() => {
-              if (prefersReducedMotion && !allowReducedMotionAutoplay) {
-                setAllowReducedMotionAutoplay(true)
-                return
-              }
-              setIsPaused((paused) => !paused)
-            }}
-          >
-            {isPaused || (prefersReducedMotion && !allowReducedMotionAutoplay) ? <Play size={15} /> : <Pause size={15} />}
-          </button>
-          <button type="button" aria-label="Next travel inspiration" onClick={() => changeSlide((slideIndex + 1) % heroSlides.length)}>
-            <ArrowRight size={16} />
-          </button>
-        </div>
-        <div className={`hero-slide-progress${isPaused || (prefersReducedMotion && !allowReducedMotionAutoplay) ? ' is-paused' : ''}`} aria-hidden="true">
+        <div className="hero-slide-progress" aria-hidden="true">
           <span key={slideIndex} />
         </div>
       </section>
