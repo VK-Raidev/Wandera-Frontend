@@ -71,7 +71,7 @@ function serializeDraft(section, draft) {
 }
 
 function AdminDashboard() {
-  useDocumentTitle('Admin Workspace', 'Manage Wanderlust Travels inquiries, packages, destinations, and testimonials.', 'noindex,nofollow')
+  useDocumentTitle('Admin Workspace', 'Manage YatraHub inquiries, packages, destinations, and testimonials.', 'noindex,nofollow')
   const navigate = useNavigate()
   const [activeSection, setActiveSection] = useState('inquiries')
   const [admin, setAdmin] = useState(null)
@@ -106,7 +106,6 @@ function AdminDashboard() {
     }).catch((requestError) => {
       if (!isCurrent) return
       if ([401, 403].includes(requestError.response?.status)) {
-        localStorage.removeItem('adminToken')
         navigate('/admin/login', { replace: true })
         return
       }
@@ -195,9 +194,13 @@ function AdminDashboard() {
     }
   }
 
-  function signOut() {
-    localStorage.removeItem('adminToken')
-    navigate('/admin/login', { replace: true })
+  async function signOut() {
+    try {
+      await api.post('/auth/logout')
+      navigate('/admin/login', { replace: true })
+    } catch (requestError) {
+      setError(requestError.response?.data?.error || 'Unable to sign out. Please try again.')
+    }
   }
 
   if (isLoading) return <main className="admin-dashboard-page"><p className="admin-loading">Loading admin workspace...</p></main>
@@ -207,7 +210,7 @@ function AdminDashboard() {
       <header className="admin-dashboard-header">
         <Link className="brand" to="/">
           <span className="brand-mark"><Compass size={20} /></span>
-          <span>wanderlust <b>travels</b></span>
+          <span>YatraHub</span>
         </Link>
         <div className="admin-dashboard-account">
           <span>{admin?.email}</span>

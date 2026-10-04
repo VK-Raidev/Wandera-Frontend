@@ -25,7 +25,7 @@ function PackageDetails() {
   const selectedImage = images[Math.min(activeImage, Math.max(images.length - 1, 0))]
   useDocumentTitle(
     travelPackage?.title || 'Package details',
-    travelPackage?.overview || 'Explore package details, itinerary, inclusions, and request a trip quote with Wanderlust Travels.',
+    travelPackage?.overview || 'Explore package details, itinerary, inclusions, and request a trip quote with YatraHub.',
   )
 
   function markImageBroken(image) {

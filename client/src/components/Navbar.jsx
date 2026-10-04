@@ -1,6 +1,7 @@
 import { useState } from 'react'
 import { Compass, Menu, X } from 'lucide-react'
 import { Link, NavLink } from 'react-router-dom'
+import api from '../services/api'
 
 const links = [
   { to: '/', label: 'Home' },
@@ -13,17 +14,31 @@ const links = [
 
 function Navbar() {
   const [menuOpen, setMenuOpen] = useState(false)
+  const [signOutError, setSignOutError] = useState('')
+  const [isSigningOut, setIsSigningOut] = useState(false)
 
   function closeMenu() {
     setMenuOpen(false)
   }
 
+  async function signOut() {
+    setSignOutError('')
+    setIsSigningOut(true)
+    try {
+      await api.post('/auth/logout')
+      window.location.assign('/login')
+    } catch (requestError) {
+      setSignOutError(requestError.response?.data?.error || 'Unable to sign out. Please try again.')
+      setIsSigningOut(false)
+    }
+  }
+
   return (
     <header className="site-header">
       <div className="nav-wrap">
-        <Link className="brand" to="/" aria-label="Wanderlust Travels home" onClick={closeMenu}>
+        <Link className="brand" to="/" aria-label="YatraHub home" onClick={closeMenu}>
           <span className="brand-mark"><Compass size={22} strokeWidth={1.8} /></span>
-          <span>Wanderlust <b>Travels</b></span>
+          <span>YatraHub</span>
         </Link>
         <button
           className="menu-toggle"
@@ -48,6 +63,10 @@ function Navbar() {
             </NavLink>
           ))}
           <Link className="nav-cta" to="/custom-trip" onClick={closeMenu}>Plan My Trip</Link>
+          <button className="nav-link nav-signout" type="button" onClick={signOut} disabled={isSigningOut}>
+            {isSigningOut ? 'Signing out...' : 'Sign out'}
+          </button>
+          {signOutError && <span className="nav-signout-error" role="alert">{signOutError}</span>}
         </nav>
       </div>
     </header>

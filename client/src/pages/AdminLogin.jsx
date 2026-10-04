@@ -5,7 +5,7 @@ import api from '../services/api'
 import { useDocumentTitle } from '../hooks/useDocumentTitle'
 
 function AdminLogin() {
-  useDocumentTitle('Admin Login', 'Sign in to the Wanderlust Travels administration workspace.', 'noindex,nofollow')
+  useDocumentTitle('Admin Login', 'Sign in to the YatraHub administration workspace.', 'noindex,nofollow')
   const [email, setEmail] = useState('')
   const [password, setPassword] = useState('')
   const [error, setError] = useState('')
@@ -18,8 +18,7 @@ function AdminLogin() {
     setIsSubmitting(true)
 
     try {
-      const { data } = await api.post('/auth/login', { email, password })
-      localStorage.setItem('adminToken', data.token)
+      await api.post('/auth/admin/login', { email, password })
       navigate('/admin', { replace: true })
     } catch (requestError) {
       if (requestError.response?.data?.error) {
@@ -39,14 +38,14 @@ function AdminLogin() {
       <header className="admin-login-header">
         <Link className="brand" to="/">
           <span className="brand-mark"><Compass size={20} /></span>
-          <span>wanderlust <b>travels</b></span>
+          <span>YatraHub</span>
         </Link>
         <span className="admin-access-label"><LockKeyhole size={14} /> Private access</span>
       </header>
 
       <section className="admin-login-content" aria-labelledby="admin-login-title">
         <div className="admin-login-copy">
-          <p className="eyebrow">Wanderlust travels / Admin</p>
+          <p className="eyebrow">YatraHub / Admin</p>
           <h1 id="admin-login-title">Good to have you back.</h1>
           <p>Sign in to continue to your workspace.</p>
         </div>

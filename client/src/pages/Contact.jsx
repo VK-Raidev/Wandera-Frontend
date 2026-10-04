@@ -21,7 +21,7 @@ const initialForm = {
 }
 
 function Contact() {
-  useDocumentTitle('Contact', 'Contact Wanderlust Travels or send a trip inquiry to start planning your next journey.')
+  useDocumentTitle('Contact', 'Contact YatraHub or send a trip inquiry to start planning your next journey.')
   const [destinations, setDestinations] = useState([])
   const [destinationsLoading, setDestinationsLoading] = useState(true)
   const [destinationLoadError, setDestinationLoadError] = useState('')
@@ -199,12 +199,12 @@ function Contact() {
           <div className="contact-sidebar-block">
             <p className="eyebrow">Talk to a real person</p>
             <a className="contact-detail-link" href={phoneHref}><span className="contact-detail-icon"><Phone size={18} /></span><span><small>Call us</small><strong>{configuredPhone}</strong></span><ArrowUpRight size={15} /></a>
-            <a className="contact-detail-link" href={`mailto:${import.meta.env.VITE_CONTACT_EMAIL || 'hello@wanderlust.example'}`}><span className="contact-detail-icon"><Mail size={18} /></span><span><small>Email</small><strong>{import.meta.env.VITE_CONTACT_EMAIL || 'hello@wanderlust.example'}</strong></span><ArrowUpRight size={15} /></a>
+            <a className="contact-detail-link" href={`mailto:${import.meta.env.VITE_CONTACT_EMAIL || 'hello@yatrahub.example'}`}><span className="contact-detail-icon"><Mail size={18} /></span><span><small>Email</small><strong>{import.meta.env.VITE_CONTACT_EMAIL || 'hello@yatrahub.example'}</strong></span><ArrowUpRight size={15} /></a>
             <a className="contact-detail-link" href={whatsappHref} target="_blank" rel="noreferrer"><span className="contact-detail-icon contact-whatsapp-icon"><MessageCircle size={18} /></span><span><small>WhatsApp</small><strong>Chat with our travel team</strong></span><ArrowUpRight size={15} /></a>
           </div>
 
           <div className="contact-map-card">
-            <div className="map-placeholder"><MapPin size={27} /><span>Wanderlust Travels</span><small>India | Planning everywhere</small></div>
+            <div className="map-placeholder"><MapPin size={27} /><span>YatraHub</span><small>India | Planning everywhere</small></div>
             <div className="contact-office-info"><div><p className="eyebrow">Office</p><strong>India | Meetings by appointment</strong></div><a href={officeMapHref} target="_blank" rel="noreferrer">Open Google Maps <ArrowUpRight size={14} /></a></div>
           </div>
 

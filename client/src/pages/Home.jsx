@@ -27,7 +27,7 @@ const tripSteps = [
 
 function Home() {
   const [heroDestination, setHeroDestination] = useState(null)
-  useDocumentTitle('Home', 'Browse destinations, thoughtful travel packages, and custom trip ideas with Wanderlust Travels.')
+  useDocumentTitle('Home', 'Browse destinations, thoughtful travel packages, and custom trip ideas with YatraHub.')
 
   useEffect(() => {
     let isCurrentRequest = true
@@ -45,7 +45,7 @@ function Home() {
         {heroDestination?.image && <img className="home-hero-image" src={heroDestination.image} alt="" />}
         <div className="hero-copy">
           <p className="hero-kicker"><MapPin size={15} /> {heroDestination ? `${heroDestination.category} | ${heroDestination.name}` : 'Find your elsewhere'}</p>
-          <h1>Wanderlust<br />Travels</h1>
+          <h1>YatraHub</h1>
           <p className="hero-description">Journeys with room to breathe, people to meet, and stories worth bringing home.</p>
           <div className="hero-actions">
             <Link className="button button-coral" to="/destinations">Explore journeys <ArrowRight size={17} /></Link>

@@ -5151,3 +5151,54 @@ textarea.contact-input {
   grid-template-columns: repeat(auto-fit, minmax(190px, 1fr));
   grid-template-rows: repeat(auto-fit, minmax(190px, 240px));
 }
+
+.nav-signout {
+  padding: 0;
+  border: 0;
+  background: transparent;
+  font: inherit;
+  cursor: pointer;
+}
+
+.nav-signout:disabled {
+  cursor: wait;
+  opacity: 0.65;
+}
+
+.nav-signout-error {
+  color: #a63f32;
+  font-size: 11px;
+}
+
+.auth-switch {
+  margin: -4px 0 0;
+  color: var(--muted);
+  font-size: 12px;
+  text-align: center;
+}
+
+.auth-switch a {
+  color: var(--green);
+  font-weight: 600;
+}
+
+.auth-checking {
+  min-height: 50vh;
+  display: grid;
+  align-content: center;
+  justify-items: center;
+  gap: 16px;
+  padding: 32px;
+  color: var(--muted);
+  text-align: center;
+}
+
+.auth-checking .admin-login-submit {
+  padding-inline: 24px;
+}
+
+@media (max-width: 960px) {
+  .nav-signout {
+    align-self: center;
+  }
+}

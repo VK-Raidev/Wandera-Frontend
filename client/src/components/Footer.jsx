@@ -4,7 +4,7 @@ import { Link } from 'react-router-dom'
 import api from '../services/api'
 
 const contactPhone = import.meta.env.VITE_CONTACT_PHONE || '+91 98765 43210'
-const contactEmail = import.meta.env.VITE_CONTACT_EMAIL || 'hello@wanderlust.example'
+const contactEmail = import.meta.env.VITE_CONTACT_EMAIL || 'hello@yatrahub.example'
 
 const socialLinks = [
   { label: 'Instagram', href: import.meta.env.VITE_INSTAGRAM_URL || 'https://www.instagram.com/', icon: Camera },
@@ -52,7 +52,7 @@ function Footer() {
       <div className="footer-main footer-link-grid">
         <div className="footer-brand-block">
           <Link className="footer-brand" to="/">
-            <Compass size={22} /> Wanderlust Travels
+            <Compass size={22} /> YatraHub
           </Link>
           <p>Thoughtful trips, shaped around the way you like to travel.</p>
           <Link className="footer-plan-link" to="/custom-trip">Plan a trip <ArrowUpRight size={14} /></Link>
@@ -105,7 +105,7 @@ function Footer() {
         </div>
       </div>
       <div className="footer-bottom">
-        <span>Copyright {new Date().getFullYear()} Wanderlust Travels</span>
+        <span>Copyright {new Date().getFullYear()} YatraHub</span>
         <span>Travel well. Come back changed.</span>
       </div>
     </footer>

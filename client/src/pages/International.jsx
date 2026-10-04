@@ -11,7 +11,7 @@ function International() {
   const [error, setError] = useState('')
   const [reloadKey, setReloadKey] = useState(0)
 
-  useDocumentTitle('International Trips', 'Explore international travel packages, destination details, and trip options with Wanderlust Travels.')
+  useDocumentTitle('International Trips', 'Explore international travel packages, destination details, and trip options with YatraHub.')
 
   useEffect(() => {
     let isCurrentRequest = true
