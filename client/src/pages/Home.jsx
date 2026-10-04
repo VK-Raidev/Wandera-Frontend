@@ -1,5 +1,5 @@
-import { useEffect, useState } from 'react'
-import { ArrowDown, ArrowRight, BadgeCheck, BadgeDollarSign, BedDouble, Check, Compass, Headset, HeartHandshake, MapPin, MessageSquareText, Plane, Route, SlidersHorizontal, Van } from 'lucide-react'
+import { useEffect, useRef, useState } from 'react'
+import { ArrowDown, ArrowLeft, ArrowRight, BadgeCheck, BadgeDollarSign, BedDouble, Check, Compass, Headset, HeartHandshake, MapPin, MessageSquareText, Pause, Plane, Play, Route, SlidersHorizontal, Van } from 'lucide-react'
 import { Link } from 'react-router-dom'
 import FeaturedDestinations from '../components/FeaturedDestinations'
 import FaqSection from '../components/FaqSection'
@@ -31,9 +31,84 @@ const journeyPromises = [
   { icon: Compass, label: 'Room for the unexpected' },
 ]
 
+const heroSlides = [
+  { place: 'Dolomites, Italy', quote: 'Somewhere between the peaks, you find a little more of yourself.', photo: 'photo-1519681393784-d120267933ba' },
+  { place: 'The quiet coast', quote: 'Let the tide set the pace. You have nowhere else to be.', photo: 'photo-1507525428034-b723cf961d3e' },
+  { place: 'Alpine mornings', quote: 'Wake up where the mountains make everything feel possible.', photo: 'photo-1470770841072-f978cf4d019e' },
+  { place: 'A road through nowhere', quote: 'Take the long way. It is often where the story begins.', photo: 'photo-1500530855697-b586d89ba3ee' },
+  { place: 'The lakeside pause', quote: 'Trade the rush for a view that asks you to stay a while.', photo: 'photo-1493246507139-91e8fad9978e' },
+  { place: 'A little island time', quote: 'Salt in your hair. No plans until the sun goes down.', photo: 'photo-1506929562872-bb421503ef21' },
+  { place: 'Into the highlands', quote: 'Find your kind of wild, one winding trail at a time.', photo: 'photo-1464822759023-fed622ff2c3b' },
+  { place: 'Somewhere tropical', quote: 'The best souvenir is a day you wish would last longer.', photo: 'photo-1519046904884-53103b34b206' },
+  { place: 'Desert golden hour', quote: 'Follow the warm light. Let the rest wait until tomorrow.', photo: 'photo-1509316785289-025f5b846b35' },
+  { place: 'A cabin in the woods', quote: 'A slower morning can change the shape of your whole trip.', photo: 'photo-1449158743715-0a90ebb6d2d8' },
+  { place: 'Above the clouds', quote: 'Go a little higher. See how small your worries become.', photo: 'photo-1464278533981-50106e6176b1' },
+  { place: 'The blue beyond', quote: 'Make room for the kind of quiet you can only find at sea.', photo: 'photo-1518837695005-2083093ee35b' },
+  { place: 'A new city, on foot', quote: 'Turn down a side street. Your favourite place may be there.', photo: 'photo-1519608487953-e999c86e7455' },
+  { place: 'The morning trail', quote: 'A fresh trail. A deep breath. A day that belongs to you.', photo: 'photo-1470252649378-9c29740c9fa8' },
+  { place: 'The faraway shore', quote: 'Go where the map ends and your curiosity takes over.', photo: 'photo-1501785888041-af3ef285b470' },
+  { place: 'A valley in bloom', quote: 'There is a season for everything. This one is for going.', photo: 'photo-1476514525535-07fb3b4ae5f1' },
+  { place: 'The great outdoors', quote: 'Leave a little space in your plans for a beautiful surprise.', photo: 'photo-1469474968028-56623f02e42e' },
+  { place: 'A golden escape', quote: 'Chase the horizon, not the checklist.', photo: 'photo-1473116763249-2faaef81ccda' },
+  { place: 'Where rivers wander', quote: 'Follow the water. See where a day without hurry leads.', photo: 'photo-1433086966358-54859d0ed716' },
+  { place: 'Your next somewhere', quote: 'There is more world waiting than you can imagine.', photo: 'photo-1500534314209-a25ddb2bd429' },
+].map((slide) => ({
+  ...slide,
+  image: `https://images.unsplash.com/${slide.photo}?auto=format&fit=crop&w=1920&q=78`,
+}))
+
 function Home() {
   const [heroDestination, setHeroDestination] = useState(null)
+  const [slideIndex, setSlideIndex] = useState(() => Math.floor(Math.random() * heroSlides.length))
+  const [outgoingSlide, setOutgoingSlide] = useState(null)
+  const [isPaused, setIsPaused] = useState(false)
+  const [prefersReducedMotion, setPrefersReducedMotion] = useState(false)
+  const [allowReducedMotionAutoplay, setAllowReducedMotionAutoplay] = useState(false)
+  const outgoingTimerRef = useRef(null)
+  const currentSlide = heroSlides[slideIndex]
   useDocumentTitle('Home', 'Browse destinations, thoughtful travel packages, and custom trip ideas with YatraHub.')
+
+  function changeSlide(nextIndex) {
+    if (nextIndex === slideIndex) return
+    setOutgoingSlide(currentSlide)
+    setSlideIndex(nextIndex)
+  }
+
+  useEffect(() => {
+    const mediaQuery = window.matchMedia('(prefers-reduced-motion: reduce)')
+    const updatePreference = () => setPrefersReducedMotion(mediaQuery.matches)
+    updatePreference()
+    mediaQuery.addEventListener('change', updatePreference)
+    return () => mediaQuery.removeEventListener('change', updatePreference)
+  }, [])
+
+  useEffect(() => {
+    if (isPaused || (prefersReducedMotion && !allowReducedMotionAutoplay)) return undefined
+
+    const randomOffset = 1 + Math.floor(Math.random() * (heroSlides.length - 1))
+    const nextSlideIndex = (slideIndex + randomOffset) % heroSlides.length
+    const nextImage = new Image()
+    nextImage.src = heroSlides[nextSlideIndex].image
+    const timeoutId = window.setTimeout(() => {
+      setOutgoingSlide(currentSlide)
+      setSlideIndex(nextSlideIndex)
+    }, 4500)
+
+    return () => window.clearTimeout(timeoutId)
+  }, [allowReducedMotionAutoplay, currentSlide, isPaused, prefersReducedMotion, slideIndex])
+
+  useEffect(() => {
+    if (!outgoingSlide) return undefined
+
+    outgoingTimerRef.current = window.setTimeout(() => {
+      setOutgoingSlide(null)
+      outgoingTimerRef.current = null
+    }, 1450)
+
+    return () => {
+      if (outgoingTimerRef.current) window.clearTimeout(outgoingTimerRef.current)
+    }
+  }, [outgoingSlide])
 
   useEffect(() => {
     let isCurrentRequest = true
@@ -48,18 +123,69 @@ function Home() {
   return (
     <>
       <section className="home-hero">
-        {heroDestination?.image && <img className="home-hero-image" src={heroDestination.image} alt="" />}
+        {outgoingSlide && (
+          <img
+            className="home-hero-image is-outgoing"
+            key={`${outgoingSlide.photo}-outgoing`}
+            src={outgoingSlide.image}
+            alt=""
+            aria-hidden="true"
+          />
+        )}
+        <img
+          className="home-hero-image is-current"
+          key={currentSlide.photo}
+          src={currentSlide.image}
+          alt={`Travel inspiration: ${currentSlide.place}`}
+          fetchPriority="high"
+        />
         <div className="hero-copy">
-          <p className="hero-kicker"><MapPin size={15} /> {heroDestination ? `${heroDestination.category} / ${heroDestination.name}` : 'For the curious at heart'}</p>
-          <h1>Go where<br /><em>you feel most alive.</em></h1>
-          <p className="hero-description">Thoughtful journeys, made around your pace. Find a little wonder, without having to plan every detail alone.</p>
+          <div className="hero-kicker-stack" aria-live="polite" aria-atomic="true">
+            {outgoingSlide && (
+              <p className="hero-kicker is-outgoing" aria-hidden="true"><MapPin size={15} /> {outgoingSlide.place}</p>
+            )}
+            <p className="hero-kicker is-current" key={`${currentSlide.photo}-place`}><MapPin size={15} /> {currentSlide.place}</p>
+          </div>
+          <h1>YatraHub</h1>
+          <div className="hero-quote-stack" aria-live="polite" aria-atomic="true">
+            {outgoingSlide && (
+              <p className="hero-description hero-slide-quote is-outgoing" aria-hidden="true">&ldquo;{outgoingSlide.quote}&rdquo;</p>
+            )}
+            <p className="hero-description hero-slide-quote is-current" key={`${currentSlide.photo}-quote`}>&ldquo;{currentSlide.quote}&rdquo;</p>
+          </div>
           <div className="hero-actions">
             <Link className="button button-coral" to="/destinations">Find your journey <ArrowRight size={17} /></Link>
             <Link className="hero-text-link" to="/custom-trip">Plan something personal</Link>
           </div>
         </div>
         <a className="hero-scroll" href="#featured" aria-label="Scroll to featured journeys"><ArrowDown size={17} /></a>
-        <span className="hero-caption">{heroDestination ? `A little further: ${heroDestination.name}` : 'Considered journeys, with room to wander'}</span>
+        <div className="hero-slide-controls" aria-label="Travel inspiration slideshow controls">
+          <span className="hero-slide-count" aria-label={`Slide ${slideIndex + 1} of ${heroSlides.length}`}>
+            {String(slideIndex + 1).padStart(2, '0')} <span>/ {String(heroSlides.length).padStart(2, '0')}</span>
+          </span>
+          <button type="button" aria-label="Previous travel inspiration" onClick={() => changeSlide((slideIndex + heroSlides.length - 1) % heroSlides.length)}>
+            <ArrowLeft size={16} />
+          </button>
+          <button
+            type="button"
+            aria-label={isPaused || (prefersReducedMotion && !allowReducedMotionAutoplay) ? 'Play travel inspiration slideshow' : 'Pause travel inspiration slideshow'}
+            onClick={() => {
+              if (prefersReducedMotion && !allowReducedMotionAutoplay) {
+                setAllowReducedMotionAutoplay(true)
+                return
+              }
+              setIsPaused((paused) => !paused)
+            }}
+          >
+            {isPaused || (prefersReducedMotion && !allowReducedMotionAutoplay) ? <Play size={15} /> : <Pause size={15} />}
+          </button>
+          <button type="button" aria-label="Next travel inspiration" onClick={() => changeSlide((slideIndex + 1) % heroSlides.length)}>
+            <ArrowRight size={16} />
+          </button>
+        </div>
+        <div className={`hero-slide-progress${isPaused || (prefersReducedMotion && !allowReducedMotionAutoplay) ? ' is-paused' : ''}`} aria-hidden="true">
+          <span key={slideIndex} />
+        </div>
       </section>
 
       <TripSearchPanel />
