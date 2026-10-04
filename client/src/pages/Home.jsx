@@ -1,5 +1,5 @@
 import { useEffect, useState } from 'react'
-import { ArrowDown, ArrowRight, BadgeCheck, BadgeDollarSign, BedDouble, Check, Compass, Headset, MapPin, MessageSquareText, Plane, Route, SlidersHorizontal, Van } from 'lucide-react'
+import { ArrowDown, ArrowRight, BadgeCheck, BadgeDollarSign, BedDouble, Check, Compass, Headset, HeartHandshake, MapPin, MessageSquareText, Plane, Route, SlidersHorizontal, Van } from 'lucide-react'
 import { Link } from 'react-router-dom'
 import FeaturedDestinations from '../components/FeaturedDestinations'
 import FaqSection from '../components/FaqSection'
@@ -25,6 +25,12 @@ const tripSteps = [
   { icon: Plane, title: 'Take the trip', description: 'Travel with your plans in place and support close by.' },
 ]
 
+const journeyPromises = [
+  { icon: BadgeCheck, label: 'Plans built around you' },
+  { icon: HeartHandshake, label: 'Real people, here to help' },
+  { icon: Compass, label: 'Room for the unexpected' },
+]
+
 function Home() {
   const [heroDestination, setHeroDestination] = useState(null)
   useDocumentTitle('Home', 'Browse destinations, thoughtful travel packages, and custom trip ideas with YatraHub.')
@@ -44,25 +50,34 @@ function Home() {
       <section className="home-hero">
         {heroDestination?.image && <img className="home-hero-image" src={heroDestination.image} alt="" />}
         <div className="hero-copy">
-          <p className="hero-kicker"><MapPin size={15} /> {heroDestination ? `${heroDestination.category} | ${heroDestination.name}` : 'Find your elsewhere'}</p>
-          <h1>YatraHub</h1>
-          <p className="hero-description">Journeys with room to breathe, people to meet, and stories worth bringing home.</p>
+          <p className="hero-kicker"><MapPin size={15} /> {heroDestination ? `${heroDestination.category} / ${heroDestination.name}` : 'For the curious at heart'}</p>
+          <h1>Go where<br /><em>you feel most alive.</em></h1>
+          <p className="hero-description">Thoughtful journeys, made around your pace. Find a little wonder, without having to plan every detail alone.</p>
           <div className="hero-actions">
-            <Link className="button button-coral" to="/destinations">Explore journeys <ArrowRight size={17} /></Link>
-            <Link className="hero-text-link" to="/custom-trip">Make it your own</Link>
+            <Link className="button button-coral" to="/destinations">Find your journey <ArrowRight size={17} /></Link>
+            <Link className="hero-text-link" to="/custom-trip">Plan something personal</Link>
           </div>
         </div>
         <a className="hero-scroll" href="#featured" aria-label="Scroll to featured journeys"><ArrowDown size={17} /></a>
-        <span className="hero-caption">{heroDestination ? `Discover ${heroDestination.name}` : 'Journeys shaped around you'}</span>
+        <span className="hero-caption">{heroDestination ? `A little further: ${heroDestination.name}` : 'Considered journeys, with room to wander'}</span>
       </section>
 
       <TripSearchPanel />
+
+      <section className="journey-promises" aria-label="The YatraHub difference">
+        {journeyPromises.map(({ icon: Icon, label }) => (
+          <div className="journey-promise" key={label}>
+            <Icon size={19} strokeWidth={1.7} aria-hidden="true" />
+            <span>{label}</span>
+          </div>
+        ))}
+      </section>
 
       <section className="content-section featured-section" id="featured">
         <div className="section-heading-row">
           <div>
             <p className="eyebrow">A good place to begin</p>
-            <h2>Journeys for your kind of curious</h2>
+            <h2>Somewhere special is calling.</h2>
           </div>
           <Link className="quiet-link" to="/destinations">All destinations <ArrowRight size={16} /></Link>
         </div>

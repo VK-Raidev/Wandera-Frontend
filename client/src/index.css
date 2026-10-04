@@ -3,8 +3,8 @@
 
 :root {
   font-family: 'DM Sans', 'Trebuchet MS', sans-serif;
-  color: #172d26;
-  background: #f5f6f1;
+  color: #1c2b27;
+  background: #f8f7f3;
   font-synthesis: none;
   text-rendering: optimizeLegibility;
   -webkit-font-smoothing: antialiased;
@@ -12,15 +12,15 @@
   font-optical-sizing: auto;
   font-weight: 400;
 
-  --ink: #172d26;
-  --green: #285c49;
-  --green-deep: #153b30;
-  --coral: #d66f4f;
-  --lime: #d6df85;
-  --paper: #f5f6f1;
+  --ink: #1c2b27;
+  --green: #356b59;
+  --green-deep: #173c34;
+  --coral: #c87951;
+  --lime: #e5cb85;
+  --paper: #f8f7f3;
   --white: #fff;
-  --muted: #64766d;
-  --line: #dfe5dc;
+  --muted: #6e7b74;
+  --line: #e5e6df;
 }
 
 * {
